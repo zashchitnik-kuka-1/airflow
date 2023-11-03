@@ -39,6 +39,8 @@ from typing import TYPE_CHECKING, Any, Callable, TypeVar, cast
 from urllib.parse import urlsplit
 from uuid import uuid4
 
+from airflow.datasets import Dataset
+
 if TYPE_CHECKING:
     with suppress(ImportError):
         from aiobotocore.client import AioBaseClient
@@ -55,6 +57,7 @@ from airflow.utils.helpers import chunks
 
 if TYPE_CHECKING:
     from mypy_boto3_s3.service_resource import Bucket as S3Bucket, Object as S3ResourceObject
+    from openlineage.client.run import Dataset as OpenLineageDataset
 
 T = TypeVar("T", bound=Callable)
 
@@ -1276,6 +1279,9 @@ class S3Hook(AwsBaseHook):
         response = self.get_conn().copy_object(
             Bucket=dest_bucket_name, Key=dest_bucket_key, CopySource=copy_source, ACL=acl_policy
         )
+
+        self.add_input_dataset(Dataset(uri=f"s3://{source_bucket_name}/{source_bucket_key}/"))
+        self.add_output_dataset(Dataset(uri=f"s3://{dest_bucket_name}/{dest_bucket_key}/"))
         return response
 
     @provide_bucket_name
@@ -1398,8 +1404,12 @@ class S3Hook(AwsBaseHook):
             file_path.parent.mkdir(exist_ok=True, parents=True)
 
             file = open(file_path, "wb")
+
+            self.add_output_dataset(Dataset(uri="file://" + str(file_path)))
+
         else:
             file = NamedTemporaryFile(dir=local_path, prefix="airflow_tmp_", delete=False)  # type: ignore
+            self.add_output_dataset(Dataset("file://" + str(local_path or gettempdir())))
 
         with file:
             s3_obj.download_fileobj(
@@ -1407,6 +1417,8 @@ class S3Hook(AwsBaseHook):
                 ExtraArgs=self.extra_args,
                 Config=self.transfer_config,
             )
+
+        self.add_input_dataset(Dataset(uri="s3://" + bucket_name if bucket_name else +"/" + key))  # type: ignore
 
         return file.name
 
@@ -1517,3 +1529,9 @@ class S3Hook(AwsBaseHook):
         """
         s3_client = self.get_conn()
         s3_client.delete_bucket_tagging(Bucket=bucket_name)
+
+    def airflow_to_ol_dataset(self, dataset: Dataset) -> OpenLineageDataset:
+        from openlineage.client.run import Dataset as OpenLineageDataset
+
+        bucket_name, key = S3Hook.parse_s3_url(dataset.uri)
+        return OpenLineageDataset(namespace=f"s3://{bucket_name}/", name=key)

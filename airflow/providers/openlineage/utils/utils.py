@@ -404,8 +404,8 @@ def print_warning(log):
         def wrapper(*args, **kwargs):
             try:
                 return f(*args, **kwargs)
-            except Exception as e:
-                log.warning(e)
+            except Exception:
+                log.exception("exc")
 
         return wrapper
 
