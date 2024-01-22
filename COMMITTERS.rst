@@ -15,14 +15,14 @@
     specific language governing permissions and limitations
     under the License.
 
-.. contents:: :local:
-
-Committers and PMC's
-====================
+Committers and PMC members
+==========================
 
 This document assumes that you know how Airflow's community work, but you would like to learn more about the rules by which we add new members.
 
-Before reading this document, you should be familiar with `Contributor's guide <https://github.com/apache/airflow/blob/main/CONTRIBUTING.rst>`__.
+Before reading this document, you should be familiar with `Contributors' guide <contributing-docs/README.rst>`__.
+
+.. contents:: :local:
 
 Guidelines to become an Airflow Committer
 ------------------------------------------
@@ -49,7 +49,7 @@ General prerequisites that we look for in all candidates:
 2.  Visibility on discussions on the dev mailing list, Slack channels or GitHub issues/discussions
 3.  Contributions to community health and project's sustainability for the long-term
 4.  Understands contributor/committer guidelines:
-    `Contributors' Guide <https://github.com/apache/airflow/blob/main/CONTRIBUTING.rst>`__
+    `Contributors' Guide <contributing-docs/README.rst>`__
 
 
 Code contribution

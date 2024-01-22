@@ -163,10 +163,20 @@ release provided they have access to the appropriate platform and tools.
 
 ## Contributing
 
-Want to help build Apache Airflow? Check out our [contributing documentation](https://github.com/apache/airflow/blob/main/CONTRIBUTING.rst).
+Want to help build Apache Airflow? Check out our [contributing documentation](https://github.com/apache/airflow/blob/main/contributing-docs/README.rst).
 
 Official Docker (container) images for Apache Airflow are described in [IMAGES.rst](https://github.com/apache/airflow/blob/main/IMAGES.rst).
 
+
+## Commit Policy
+
+The following commit policy passed by a vote 8(binding) FOR to 0 against on May 27, 2016 on the dev list
+and slightly modified and consensus reached in October 2020:
+
+* Commits need a +1 vote from a committer who is not the author
+* Do not merge a PR that regresses linting or does not pass CI tests (unless we have
+  justification such as clearly transient error).
+* When we do AIP voting, both PMC and committer +1s are considered a binding vote.
 
 ## Who uses Apache Airflow?
 
